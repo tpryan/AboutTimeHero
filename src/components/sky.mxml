@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:components="components.*"
+		left="0" right="0" top="0" bottom="0" creationComplete="init()" currentState="day"
+		title="skyBG">
+	
+	<s:states>
+		<s:State name="day" />
+		<s:State name="night" />
+		<s:State name="dawn" />
+		<s:State name="dusk" />
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.graphics.GradientEntry;
+			
+			import spark.components.Image;
+			
+			protected var dayColors:Array = new Array();
+			protected var nightColors:Array = new Array();
+			protected var dawnColors:Array = new Array();
+			protected var duskColors:Array = new Array();
+			
+			
+			private function populateColors():void{
+				
+				dayColors.push(new GradientEntry(0x95b3bb, 0.00, 1));
+				dayColors.push(new GradientEntry(0xafc7d1, 0.40, 1));
+				dayColors.push(new GradientEntry(0x004c7d, 0.99, 1));
+				
+				nightColors.push(new GradientEntry(0x002136, 0, 1));
+				nightColors.push(new GradientEntry(0x000016, 0.10, 1));
+				nightColors.push(new GradientEntry(0x002136, 1, 1));
+
+				dawnColors.push(new GradientEntry(0x004c7d, 0.5, 1));
+				dawnColors.push(new GradientEntry(0x998e8a, 0.97, 1));
+				dawnColors.push(new GradientEntry(0xc2a289, 0.98, 1));
+				dawnColors.push(new GradientEntry(0xdd9b5c, 0.999, 1));
+				
+				
+				duskColors.push(new GradientEntry(0x004c7d, 0.5, 1));
+				duskColors.push(new GradientEntry(0x998e8a, 0.97, 1));
+				duskColors.push(new GradientEntry(0xc2a289, 0.98, 1));
+				duskColors.push(new GradientEntry(0xdd9b5c, 0.999, 1));
+				
+			}
+			
+			
+			
+			protected function init():void
+			{
+				populateColors();
+				currentState = "dusk";
+				//skyGradient.entries = dayColors;
+			}
+			
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	
+	
+	
+	<s:Rect id="rect" top="0" bottom="0" left="0" right="0">
+		<s:fill>
+			<s:LinearGradient id="skyGradient" rotation="90" entries.day="{dayColors}" entries.night="{nightColors}" entries.dawn="{dawnColors}" entries.dusk="{duskColors}" />
+		</s:fill>
+	</s:Rect>
+	
+	<!-- Day Icons -->
+	<s:Image id="sun" source="@Embed('/assets/images/sun.png')" top="15" left="50" includeIn="day" />
+	
+	<s:Image id="cloud1" source="@Embed('/assets/images/cloud.png')" top="10" left="110" includeIn="day" />
+	<s:Image id="cloud2" source="@Embed('/assets/images/cloud.png')" top="28" right="55" alpha.dawn=".3" includeIn="day,dawn" />
+	<s:Image id="cloud3" source="@Embed('/assets/images/cloud.png')" top="110" left="23" includeIn="day" />
+	
+	<!-- Night icons-->
+	<s:Image id="moon" source="@Embed('/assets/images/moon.png')" top="15" left="50" includeIn="night" />
+	<s:Image id="star1" source="@Embed('/assets/images/star.png')" top="10" left="10" includeIn="night" />
+	<s:Image id="star2" source="@Embed('/assets/images/star.png')" top="28" right="55" alpha.dusk=".2" includeIn="night,dusk" />
+	<s:Image id="star3" source="@Embed('/assets/images/star.png')" top="110" left="23" alpha.dusk=".2" includeIn="night,dusk" />
+	<s:Image id="star4" source="@Embed('/assets/images/star.png')" top="60" right="8" includeIn="night" />
+	<s:Image id="star5" source="@Embed('/assets/images/star.png')" top="22" right="200" includeIn="night" />
+	<s:Image id="star6" source="@Embed('/assets/images/star.png')" top="60" left="300" includeIn="night" />
+	<s:Image id="star7" source="@Embed('/assets/images/star.png')" top="10" left="10" includeIn="night" />
+	<s:Image id="star8" source="@Embed('/assets/images/star.png')" top="10" left="10" includeIn="night" />
+	
+	
+</s:View>

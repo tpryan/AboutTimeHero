@@ -1,0 +1,34 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+
+#minuteString{
+	fontSize: 35px;
+	paddingBottom: 15px;
+	fontFamily: "Droid Sans";
+}
+
+#hourString{
+	fontSize: 80px;
+	paddingBottom: 20px;
+	fontFamily: "Droid Sans";
+}
+
+#dayString{
+	fontSize: 50px;
+	fontFamily: "Droid Sans";
+}
+
+#monthString{
+	fontSize: 50px;	
+	fontFamily: "Droid Sans";
+}
+
+#dateString{
+	fontSize: 50px;	
+	fontFamily: "Droid Sans";
+}
+
+#yearString{
+	fontSize: 50px;	
+	fontFamily: "Droid Sans";
+}

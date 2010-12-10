@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Home" creationComplete="init()" xmlns:components="components.*">
+	
+	<fx:Style source="style.css" />
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.terrenceryan.abouttime.ui.Star;
+			import com.terrenceryan.abouttime.util.ApproximateDate;
+			
+			import flash.events.TimerEvent;
+			import flash.utils.Timer;
+
+
+			private var timestamp:Date = null;
+			private var repeatTimer:Timer = new Timer(5000);
+			
+			public function getTime():void{
+				trace("getTime Fired");
+				var aDate:ApproximateDate = new ApproximateDate(new Date());
+				hourString.text = "";
+				hourString.text = aDate.getHour();
+				minuteString.text = aDate.getMinute();
+				dayString.text = aDate.getDayofWeek() ;
+				monthString.text = aDate.getMonth();
+				dateString.text = aDate.getDayofMonth();
+				yearString.text = aDate.getYear();
+			}
+			
+
+			protected function init():void
+			{
+				getTime();
+				repeatTimer.addEventListener(TimerEvent.TIMER, onTick);
+				repeatTimer.start();
+				
+			}
+			
+			protected function onTick(e:TimerEvent):void{
+				trace("onTick Fired");
+				getTime();
+			}
+
+
+			protected function enterFrameHandler(event:Event):void
+			{
+				var now:Date = new Date();
+				
+				if (now.valueOf() > timestamp.valueOf() + 15000){
+					getTime();
+					timestamp = now;
+				}
+			}
+			
+			protected function backButton_clickHandler():void
+			{
+				NativeApplication.nativeApplication.exit();
+			}
+			
+
+
+			protected function next_clickHandler(event:MouseEvent):void
+			{
+				if (sky.currentState == "day"){
+					sky.currentState = "dusk";
+				}
+				else if (sky.currentState == "dusk"){
+					sky.currentState = "night";
+				}
+				else if (sky.currentState == "night"){
+					sky.currentState = "dawn";
+				}
+				else if (sky.currentState == "dawn"){
+					sky.currentState = "day";
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<components:sky id="sky" />
+	
+	
+	<s:Group left="10" right="10" verticalCenter="-20">
+		<s:layout>
+			<s:VerticalLayout paddingBottom="20" paddingTop="10" horizontalAlign="center" />
+		</s:layout>
+		<s:Label id="minuteString" text="Nearly" />
+		<s:Label id="hourString" text="Two O'Clock" />
+		<s:Label id="dayString" text="Friday" />
+		<s:Label id="monthString" text="Decembmer" />
+		<s:Label id="dateString" text="Tenth" />
+		<s:Label id="yearString" text="Twenty Ten" />
+	</s:Group>
+	
+	
+	<s:actionContent>
+		<s:Button id="next" label=">" click="next_clickHandler(event)"  />
+		<s:Button id="backButton" label="Close" click="backButton_clickHandler()"  />
+	</s:actionContent>
+		
+	
+	
+</s:View>
