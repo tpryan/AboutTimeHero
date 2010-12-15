@@ -49,6 +49,13 @@
 		<replace file="${build.dir}/android/${app.name}-app.xml">
 			<replacefilter token="${contentText}" value="${app.name}.swf" />
 		</replace>
+		<echo message="Copying Assets for Android"/>
+		<copy todir="${build.dir}/android/assets" preservelastmodified="true">
+			<fileset dir="${dev.dir}/assets">
+				<exclude name='.gitignore'/>
+				<exclude name='**/.DS_Store'/>
+			</fileset>	
+		</copy>
 	</target>
 	
 	<target name="collect.blackberry">
@@ -62,6 +69,13 @@
 		<replace file="${build.dir}/blackberry/${app.name}-app.xml">
 			<replacefilter token="${contentText}" value="${app.name}.swf" />
 		</replace>
+		<echo message="Copying Assets for Android"/>
+		<copy todir="${build.dir}/blackberry/assets" preservelastmodified="true">
+			<fileset dir="${dev.dir}/assets">
+				<exclude name='.gitignore'/>
+				<exclude name='**/.DS_Store'/>
+			</fileset>	
+		</copy>
 	</target>
 	
 	<target name="handleDevices" depends="collect.android, collect.blackberry"/>
@@ -80,6 +94,7 @@
 			<arg value="${app.name}"/>
 			<arg value="${app.name}-app.xml"/>
 			<arg value="${app.name}.swf"/>
+			<arg value="assets"/>
 		</exec>
 	</target>
 	
