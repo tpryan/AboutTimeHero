@@ -10,15 +10,19 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.terrenceryan.abouttime.ui.Star;
 			import com.terrenceryan.abouttime.util.ApproximateDate;
+			import com.terrenceryan.abouttime.util.Geo;
+			import com.terrenceryan.abouttime.util.TimeOfDay;
 			
 			import flash.events.TimerEvent;
 			import flash.utils.Timer;
+			
+			protected var geo:Geo = new Geo();
+			protected var tod:TimeOfDay = null;
 
 
 			private var timestamp:Date = null;
-			private var repeatTimer:Timer = new Timer(5000);
+			private var repeatTimer:Timer = new Timer(15000);
 			
 			public function getTime():void{
 				trace("getTime Fired");
@@ -39,23 +43,19 @@
 				repeatTimer.addEventListener(TimerEvent.TIMER, onTick);
 				repeatTimer.start();
 				
+				tod = new TimeOfDay(geo);
+				sky.gotToState(tod.timeofday);
+				trace("yo");
+				
 			}
 			
 			protected function onTick(e:TimerEvent):void{
 				trace("onTick Fired");
 				getTime();
+				sky.gotToState(tod.timeofday);
 			}
 
 
-			protected function enterFrameHandler(event:Event):void
-			{
-				var now:Date = new Date();
-				
-				if (now.valueOf() > timestamp.valueOf() + 15000){
-					getTime();
-					timestamp = now;
-				}
-			}
 			
 			protected function backButton_clickHandler():void
 			{
@@ -67,16 +67,16 @@
 			protected function next_clickHandler(event:MouseEvent):void
 			{
 				if (sky.currentState == "day"){
-					sky.currentState = "dusk";
+					sky.gotToState("dusk");
 				}
 				else if (sky.currentState == "dusk"){
-					sky.currentState = "night";
+					sky.gotToState("night");
 				}
 				else if (sky.currentState == "night"){
-					sky.currentState = "dawn";
+					sky.gotToState("dawn");
 				}
 				else if (sky.currentState == "dawn"){
-					sky.currentState = "day";
+					sky.gotToState("day");
 				}
 			}
 

@@ -153,13 +153,11 @@
 		<!-- </fileType> -->
 	<!-- </fileTypes> -->
 
-	<!-- Specify Android specific tags that get passed to AndroidManifest.xml file. -->
-	<!--<android> 
+	<android> 
 		<manifestAdditions>
 		<![CDATA[
 			<manifest android:installLocation="auto">
 				<uses-permission android:name="android.permission.INTERNET"/>
-				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 				<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 				<uses-configuration android:reqFiveWayNav="true"/>
 				<supports-screens android:normalScreens="true"/>
@@ -175,15 +173,5 @@
 			</manifest>
 		]]>
 		</manifestAdditions> 
-	</android> -->
-	<!-- End of the schema for adding the android specific tags in AndroidManifest.xml file -->
-
-<android>
-    <manifestAdditions><![CDATA[
-	<manifest>
-		<!-- See the Adobe AIR documentation for more information about setting Google Android permissions -->
-		<uses-permission android:name="android.permission.INTERNET"/>
-	</manifest>
-]]></manifestAdditions>
-  </android>
+	</android>
 </application>

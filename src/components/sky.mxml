@@ -6,70 +6,169 @@
 		title="skyBG">
 	
 	<s:states>
-		<s:State name="day" />
-		<s:State name="night" />
-		<s:State name="dawn" />
-		<s:State name="dusk" />
+		<s:State id="dayState" name="day" />
+		<s:State id="nightState" name="night" />
+		<s:State id="dawnState" name="dawn" />
+		<s:State id="duskState" name="dusk" />
 	</s:states>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
 			import mx.graphics.GradientEntry;
 			
 			import spark.components.Image;
 			
-			protected var dayColors:Array = new Array();
-			protected var nightColors:Array = new Array();
-			protected var dawnColors:Array = new Array();
-			protected var duskColors:Array = new Array();
-			
-			
-			private function populateColors():void{
-				
-				dayColors.push(new GradientEntry(0x95b3bb, 0.00, 1));
-				dayColors.push(new GradientEntry(0xafc7d1, 0.40, 1));
-				dayColors.push(new GradientEntry(0x004c7d, 0.99, 1));
-				
-				nightColors.push(new GradientEntry(0x002136, 0, 1));
-				nightColors.push(new GradientEntry(0x000016, 0.10, 1));
-				nightColors.push(new GradientEntry(0x002136, 1, 1));
-
-				dawnColors.push(new GradientEntry(0x004c7d, 0.5, 1));
-				dawnColors.push(new GradientEntry(0x998e8a, 0.97, 1));
-				dawnColors.push(new GradientEntry(0xc2a289, 0.98, 1));
-				dawnColors.push(new GradientEntry(0xdd9b5c, 0.999, 1));
-				
-				
-				duskColors.push(new GradientEntry(0x004c7d, 0.5, 1));
-				duskColors.push(new GradientEntry(0x998e8a, 0.97, 1));
-				duskColors.push(new GradientEntry(0xc2a289, 0.98, 1));
-				duskColors.push(new GradientEntry(0xdd9b5c, 0.999, 1));
-				
-			}
-			
-			
 			
 			protected function init():void
 			{
-				populateColors();
-				currentState = "dusk";
-				//skyGradient.entries = dayColors;
+				
+				
+			
 			}
 			
+			public function gotToState(target:String):void{
+				var stateArray:Array = new Array("dawn","day","dusk","night","dawn","day","dusk","night");
+				var startState:String = currentState;
+				var targetState:String = target;
+				var statesToShift:Array = new Array();
+				
+				for (var i:int = 0; i < stateArray.length; i++){
+					
+					if (startState == targetState){
+						break;
+					}
+					
+					if (statesToShift.length == 0){
+						if (stateArray[i] == startState){
+							statesToShift.push(stateArray[i]);
+						}	
+						
+					}
+					else{
+						statesToShift.push(stateArray[i]);
+						if ((stateArray[i] == targetState)){
+							break;
+						}
+						
+					}
+					
+				}
+				
+				trace("States to traverse");
+				trace(statesToShift.length);
+				trace(statesToShift.toString());
+				
+				if (statesToShift.length > 0){
+					for (i = 1; i < statesToShift.length - 1; i++){
+						if (statesToShift[i] == "day"){
+							dayState.addEventListener(FlexEvent.ENTER_STATE, _handleState);
+						}
+						else if (statesToShift[i] == "dusk"){
+							duskState.addEventListener(FlexEvent.ENTER_STATE, _handleState);
+						}
+						else if (statesToShift[i] == "night"){
+							nightState.addEventListener(FlexEvent.ENTER_STATE, _handleState);
+						}
+						else if (statesToShift[i] == "dawn"){
+							dawnState.addEventListener(FlexEvent.ENTER_STATE, _handleState);
+						}
+						
+					}
+					
+					if (statesToShift[i] == "day"){
+						dayState.addEventListener(FlexEvent.ENTER_STATE, removeStateListeners);
+					}
+					else if (statesToShift[i] == "dusk"){
+						duskState.addEventListener(FlexEvent.ENTER_STATE, removeStateListeners);
+					}
+					else if (statesToShift[i] == "night"){
+						nightState.addEventListener(FlexEvent.ENTER_STATE, removeStateListeners);
+					}
+					else if (statesToShift[i] == "dawn"){
+						dawnState.addEventListener(FlexEvent.ENTER_STATE, removeStateListeners);
+					}
+					
+					
+					_advanceState();
+					
+				}
+				
+				
+			}
 			
+			private function _handleState(e:FlexEvent):void{
+				_advanceState();
+				
+			}
 			
+			private function removeStateListeners(e:FlexEvent):void{
+				dayState.removeEventListener(FlexEvent.ENTER_STATE, _handleState);
+				duskState.removeEventListener(FlexEvent.ENTER_STATE, _handleState);
+				nightState.removeEventListener(FlexEvent.ENTER_STATE, _handleState);
+				dawnState.removeEventListener(FlexEvent.ENTER_STATE, _handleState);
+			}
+			
+			private function _setCurrentState(target:String):void{
+				currentState = target;
+			}
+			
+			private function _advanceState():void{
+				if (currentState == "day"){
+					currentState = "dusk";
+				}
+				else if (currentState == "dusk"){
+					currentState = "night";
+				}
+				else if (currentState == "night"){
+					currentState = "dawn";
+				}
+				else if (currentState == "dawn"){
+					currentState = "day";
+				}
+			}
 			
 		]]>
 	</fx:Script>
 	
-	
-	
-	
-	
-	
-	<s:Rect id="rect" top="0" bottom="0" left="0" right="0">
+	<s:Rect id="dawnBG" top="0" bottom="0" left="0" right="0" includeIn="dawn">
 		<s:fill>
-			<s:LinearGradient id="skyGradient" rotation="90" entries.day="{dayColors}" entries.night="{nightColors}" entries.dawn="{dawnColors}" entries.dusk="{duskColors}" />
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x004c7d" alpha="1" ratio=".5" />
+				<s:GradientEntry color="0x998e8a" alpha="1" ratio=".97" />
+				<s:GradientEntry color="0xc2a289" alpha="1" ratio=".98" />
+				<s:GradientEntry color="0xdd9b5c" alpha="1" ratio=".999" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:Rect id="dayBG" top="0" bottom="0" left="0" right="0" includeIn="day">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x95b3bb" alpha="1" ratio="0" />
+				<s:GradientEntry color="0xafc7d1" alpha="1" ratio=".40" />
+				<s:GradientEntry color="0x004c7d" alpha="1" ratio=".99" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:Rect id="duskBG" top="0" bottom="0" left="0" right="0" includeIn="dusk">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x004c7d" alpha="1" ratio=".5" />
+				<s:GradientEntry color="0x998e8a" alpha="1" ratio=".97" />
+				<s:GradientEntry color="0xc2a289" alpha="1" ratio=".98" />
+				<s:GradientEntry color="0xdd9b5c" alpha="1" ratio=".999" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Rect id="nightBG" top="0" bottom="0" left="0" right="0" includeIn="night">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x002136" alpha="1" ratio="0" />
+				<s:GradientEntry color="0x000016" alpha="1" ratio=".10" />
+				<s:GradientEntry color="0x002136" alpha="1" ratio="1" />
+			</s:LinearGradient>
 		</s:fill>
 	</s:Rect>
 	
@@ -77,7 +176,7 @@
 	<s:Image id="sun" source="@Embed('/assets/images/sun.png')" top="15" left="50" includeIn="day" />
 	
 	<s:Image id="cloud1" source="@Embed('/assets/images/cloud.png')" top="10" left="110" includeIn="day" />
-	<s:Image id="cloud2" source="@Embed('/assets/images/cloud.png')" top="28" right="55" alpha.dawn=".3" includeIn="day,dawn" />
+	<s:Image id="cloud2" source="@Embed('/assets/images/cloud.png')" top="28" right="55" alpha.day="1" alpha.dawn=".3" includeIn="day,dawn" />
 	<s:Image id="cloud3" source="@Embed('/assets/images/cloud.png')" top="110" left="23" includeIn="day" />
 	
 	<!-- Night icons-->
@@ -91,5 +190,133 @@
 	<s:Image id="star7" source="@Embed('/assets/images/star.png')" top="10" left="10" includeIn="night" />
 	<s:Image id="star8" source="@Embed('/assets/images/star.png')" top="10" left="10" includeIn="night" />
 	
-	
+	<s:transitions>
+		<s:Transition fromState="dusk" toState="night" autoReverse="true">
+			<s:Parallel>
+				<s:Parallel target="{duskBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{nightBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{moon}">
+					<s:Fade duration="500" startDelay="200"/>
+				</s:Parallel>
+				<s:Parallel target="{star1}">
+					<s:Fade duration="700" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{star2}">
+					<s:Fade duration="500" startDelay="100"/>
+				</s:Parallel>
+				<s:Parallel target="{star3}">
+					<s:Fade duration="300" startDelay="500"/>
+				</s:Parallel>
+				<s:Parallel target="{star4}">
+					<s:Fade duration="500" startDelay="300"/>
+				</s:Parallel>
+				<s:Parallel target="{star5}">
+					<s:Fade duration="900" startDelay="150"/>
+				</s:Parallel>
+				<s:Parallel target="{star6}">
+					<s:Fade duration="850" startDelay="400"/>
+				</s:Parallel>
+				<s:Parallel target="{star7}">
+					<s:Fade duration="400" startDelay="250"/>
+				</s:Parallel>
+				<s:Parallel target="{star8}">
+					<s:Fade duration="1000" startDelay="50"/>
+				</s:Parallel>
+			</s:Parallel>	
+		</s:Transition>
+		<s:Transition fromState="night" toState="dawn" autoReverse="true">
+			<s:Parallel>
+				<s:Parallel target="{dawnBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{nightBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{moon}">
+					<s:Fade duration="500" startDelay="200"/>
+				</s:Parallel>
+				<s:Parallel target="{star1}">
+					<s:Fade duration="700" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{star2}">
+					<s:Fade duration="500" startDelay="100"/>
+				</s:Parallel>
+				<s:Parallel target="{star3}">
+					<s:Fade duration="300" startDelay="500"/>
+				</s:Parallel>
+				<s:Parallel target="{star4}">
+					<s:Fade duration="500" startDelay="300"/>
+				</s:Parallel>
+				<s:Parallel target="{star5}">
+					<s:Fade duration="900" startDelay="150"/>
+				</s:Parallel>
+				<s:Parallel target="{star6}">
+					<s:Fade duration="850" startDelay="400"/>
+				</s:Parallel>
+				<s:Parallel target="{star7}">
+					<s:Fade duration="400" startDelay="250"/>
+				</s:Parallel>
+				<s:Parallel target="{star8}">
+					<s:Fade duration="1000" startDelay="50"/>
+				</s:Parallel>
+				<s:Parallel target="{cloud2}">
+					<s:Fade duration="500" startDelay="300"/>
+				</s:Parallel>
+			</s:Parallel>	
+		</s:Transition>
+		<s:Transition fromState="dawn" toState="day" autoReverse="true">
+			<s:Parallel>
+				<s:Parallel target="{dawnBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{dayBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{sun}">
+					<s:Fade duration="200" startDelay="100"/>
+				</s:Parallel>
+				<s:Parallel target="{cloud1}">
+					<s:Fade duration="300" startDelay="600"/>
+				</s:Parallel>
+				<s:Parallel target="{cloud2}">
+					<s:Fade duration="900" startDelay="300"/>
+				</s:Parallel>
+				<s:Parallel target="{cloud3}">
+					<s:Fade duration="400" startDelay="550"/>
+				</s:Parallel>
+			</s:Parallel>
+		</s:Transition>
+		<s:Transition fromState="day" toState="dusk" autoReverse="true">
+			<s:Parallel>
+				<s:Parallel target="{duskBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{dayBG}">
+					<s:Fade duration="500" startDelay="0"/>
+				</s:Parallel>
+				<s:Parallel target="{sun}">
+					<s:Fade duration="200" startDelay="100"/>
+				</s:Parallel>
+				<s:Parallel target="{cloud1}">
+					<s:Fade duration="300" startDelay="600"/>
+				</s:Parallel>
+				<s:Parallel target="{cloud2}">
+					<s:Fade duration="900" startDelay="300"/>
+				</s:Parallel>
+				<s:Parallel target="{cloud3}">
+					<s:Fade duration="400" startDelay="550"/>
+				</s:Parallel>
+				<s:Parallel target="{star2}">
+					<s:Fade duration="500" startDelay="1200"/>
+				</s:Parallel>
+				<s:Parallel target="{star3}">
+					<s:Fade duration="300" startDelay="1200"/>
+				</s:Parallel>
+			</s:Parallel>
+		</s:Transition>
+	</s:transitions>
 </s:View>
